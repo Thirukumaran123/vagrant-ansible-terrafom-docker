@@ -1,3 +1,4 @@
+
 FROM python:3.11-slim
 
 # Prevent Python from writing .pyc files & enable stdout/stderr output
@@ -13,6 +14,7 @@ COPY requirements.txt .
 
 # Install Flask
 RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
 
 # Expose the app port
 EXPOSE 8080
