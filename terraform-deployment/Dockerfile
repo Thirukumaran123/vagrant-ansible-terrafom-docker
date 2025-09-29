@@ -1,26 +1,34 @@
+# Use a minimal Python image
 FROM python:3.11-slim
 
-# Prevent Python from writing .pyc files & enable stdout/stderr output
+# Prevent Python from writing .pyc files & enable stdout/stderr
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Set working directory
+# Set the working directory for the application
 WORKDIR /app
 
-# Copy all files
-COPY . /app/
+# Install system dependencies & pip
+RUN apt-get update && \
+    apt-get install -y python3-pip build-essential ca-certificates && \
+    pip install --upgrade pip
+
+# Copy requirements file
 COPY requirements.txt .
 
-# Install Flask
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the app port
+# Copy the rest of the application code
+COPY . .
+
+# Expose the application port
 EXPOSE 8080
 
-# Flask environment variables
+# Set Flask environment variables
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=8080
 
-# Use flask run to start the app
+# Start the application
 CMD ["flask", "run"]
